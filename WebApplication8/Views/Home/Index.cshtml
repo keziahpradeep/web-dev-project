@@ -1,0 +1,1152 @@
+﻿@{
+    ViewData["Title"] = "PRODUCT CART";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>PRODUCT CART</title>
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #C69C6D;
+            color: #F0E3B4;
+        }
+
+        /* Header styles */
+        .header, .footer {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px; /* Increased height for better spacing */
+            background-color: #7E4B3A;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-sizing: border-box;
+        }
+
+        .menu-icon {
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0 10px;
+        }
+
+        .login-link {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 8px 12px;
+            background-color: #A0522D;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+            .login-link:hover {
+                background-color: #8B4513;
+            }
+
+        .header-left, .header-center, .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-center {
+            flex-grow: 1;
+            justify-content: center;
+        }
+
+        /* Footer styles */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: #C69C6D;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        /* Main container (between header and footer) */
+        .container {
+            position: fixed;
+            top: 60px; /* Adjusted to match header height */
+            bottom: 60px; /* Adjusted to match footer height */
+            left: 0;
+            right: 0;
+            display: flex;
+            overflow: hidden;
+            height: calc(100vh - 120px); /* 100vh - (header + footer height) */
+        }
+
+        /* Left Panel */
+        .left-panel {
+            width: 60vw;
+            min-width: 320px;
+            background-color: #6F4E37;
+            padding: 32px 16px;
+            box-sizing: border-box;
+            border-right: 2px solid #e0e0e0;
+            overflow-y: auto;
+            height: 100%;
+        }
+
+            .left-panel img {
+                max-width: 100%;
+                height: auto;
+            }
+
+        /* Right Panel */
+        .right-panel {
+            width: 40vw;
+            flex: 1;
+            padding: 1rem;
+            background-color: #333;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            overflow: hidden;
+        }
+
+        /* IMPROVED MODAL STYLES - CENTERED ON SCREEN */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000; /* Higher z-index to appear above everything */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
+            /* Use flexbox to center the modal */
+           
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #f5e1c0;
+            color: #4B2E15;
+            border-radius: 12px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            min-width: 300px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            position: relative;
+            transform: scale(1);
+            transition: transform 0.3s ease;
+        }
+
+            .modal-content h3 {
+                margin: 0 0 20px 0;
+                color: #4B2E15;
+                font-size: 1.3rem;
+            }
+
+            .modal-content p {
+                margin: 0 0 25px 0;
+                font-size: 1rem;
+                line-height: 1.4;
+                color: #6B4E37;
+            }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+            .modal-buttons button {
+                padding: 12px 25px;
+                font-size: 1rem;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                min-width: 80px;
+            }
+
+        #modalCancelBtn {
+            background-color: #ccc;
+            color: #333;
+        }
+
+            #modalCancelBtn:hover {
+                background-color: #bbb;
+                transform: translateY(-1px);
+            }
+
+        #modalOkBtn {
+            background-color: #3B2F2F;
+            color: white;
+        }
+
+            #modalOkBtn:hover {
+                background-color: #2A1F1F;
+                transform: translateY(-1px);
+            }
+
+        /* IMPROVED CUSTOM ALERT - CENTERED */
+        #customAlert {
+            display: none;
+            position: fixed;
+            z-index: 10001; /* Higher than modal */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            /* Use flexbox to center */
+            justify-content: center;
+            align-items: center;
+        }
+
+            #customAlert.show {
+                display: flex;
+            }
+
+            #customAlert .alert-content {
+                background: #E6D3B3;
+                border: 2px solid #8B6F47;
+                border-radius: 12px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                width: 90%;
+                max-width: 350px;
+                min-width: 280px;
+            }
+
+        #customAlertHeader {
+            padding: 15px 20px;
+            background: #D2B48C;
+            border-bottom: 1px solid #8B6F47;
+            border-radius: 10px 10px 0 0;
+            font-size: 1.2rem;
+            color: #4B2E15;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        #customAlertMsg {
+            padding: 25px 20px;
+            font-size: 1rem;
+            background-color: #F7EFE5;
+            color: #4B2E15;
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        #customAlertOk {
+            display: block;
+            margin: 15px auto 20px auto;
+            padding: 10px 25px;
+            background: #D2B48C;
+            color: #4B2E15;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            #customAlertOk:hover {
+                background: #C0A880;
+                transform: translateY(-1px);
+            }
+
+        /* Table styles */
+        .table-responsive {
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #ccc transparent;
+        }
+
+            .table-responsive::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .table-responsive::-webkit-scrollbar-thumb {
+                background-color: #ccc;
+                border-radius: 4px;
+            }
+
+        thead.sticky-top th {
+            top: 0;
+            z-index: 2;
+        }
+
+        /* Delete row button styles */
+        .delete-row-btn {
+            background: #fff;
+            color: #e74c3c;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            padding: 0;
+        }
+
+            .delete-row-btn:hover, .delete-row-btn:focus {
+                background: #e74c3c;
+                color: #fff;
+            }
+
+        /* Quantity column styles */
+        .sno-col, .qty-col {
+            padding-left: 1px !important;
+            padding-right: 1px !important;
+            padding-top: 1px !important;
+            padding-bottom: 1px !important;
+            width: 28px;
+            max-width: 32px;
+            text-align: center;
+        }
+
+        .qty-col {
+            width: 60px;
+            max-width: 60px;
+            text-align: center;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+
+        .qty-circle-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3B2F2F;
+            gap: 4px;
+        }
+
+        .qty-circle-btn:hover, .qty-circle-btn:focus {
+            background: #3B2F2F;
+            color: #fff;
+        }
+
+        .qty-circle-btn {
+            color: #fff;
+            width: 22px;
+            height: 22px;
+            font-size: 1rem;
+            padding: 0;
+        }
+
+        .qty-circle-value {
+            min-width: 14px;
+            font-size: 0.95rem;
+        }
+
+        /* Add to cart button styles */
+        .add-cart-btn {
+            margin-top: 6px;
+            width: 100%;
+            padding: 6px 0;
+            background: #3B2F2F;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+            .add-cart-btn:hover, .add-cart-btn:focus {
+                background: #3B2F2F;
+            }
+
+        /* Item styles */
+        .item img {
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+            background: #f9f9f9;
+        }
+
+        .input-row {
+            margin: 30px 0 20px 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: #fff;
+            padding: 10px 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px #0001;
+            font-size: 0.95rem;
+        }
+
+            .input-row label,
+            .input-row input,
+            .input-row button {
+                font-size: 0.95rem;
+            }
+
+                .input-row input[type="text"],
+                .input-row input[type="number"] {
+                    width: 90px;
+                    padding: 5px 5px;
+                }
+
+            .input-row button {
+                padding: 5px 5px;
+                font-size: 0.95rem;
+                margin-left: 4px;
+            }
+
+        .item-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+        .item-name {
+            color: #6E4E49;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-top: 0.6em;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .item-id {
+            font-size: 0.85em;
+            color: #9B6B5F;
+            margin-top: 0.3em;
+            text-align: center;
+        }
+
+        .item-price {
+            font-size: 1.2em;
+            margin-top: 0.4em;
+            color: #8C5A2B;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .item {
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 280px;
+            background: #F5DEB2;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 16px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-left: -10px;
+        }
+
+            .item:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            }
+
+            .item img {
+                width: 250px;
+                height: 250px;
+                object-fit: cover;
+                border-radius: 12px;
+                margin-bottom: 8px;
+            }
+
+        .left-panel .item {
+            background-color: #C69C6D;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        input[type="number"], input[type="text"] {
+            padding: 7px 10px;
+            width: 120px;
+            border: 1px solid #bbb;
+            border-radius: 4px;
+            font-size: 1rem;
+            background: #f9f9f9;
+            transition: border 0.2s;
+        }
+
+            input[type="number"]:focus, input[type="text"]:focus {
+                border: 1.5px solid #A67B5B;
+                outline: none;
+                background: #fff;
+            }
+
+        button {
+            padding: 7px 18px;
+            border: none;
+            border-radius: 4px;
+            background: #6F4E37;
+            color: #DCB190;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-left: 4px;
+        }
+
+            button:hover, button:focus {
+                background: #3B2F2F;
+            }
+
+        .scrollable-table-container {
+            max-height: 340px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background: #fff;
+            padding-bottom: 0;
+        }
+
+
+        #productTable {
+            border-collapse: collapse;
+            width: 100%;
+            min-width: 0;
+            background: #fff;
+            color: black;
+        }
+
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 2px 4px;
+            font-size: 0.93rem;
+        }
+
+        th {
+            background: #C4A484;
+            color: #fff;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        tr:nth-child(even) td {
+            background: #f4f8fb;
+        }
+
+        tfoot td {
+            background: #f0f0f0;
+            font-weight: 700;
+            color: #333;
+        }
+
+        #productTable th,
+        #productTable td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #3B2F2F;
+            color: #fff; /* Changed toast text color to white for better contrast */
+            border: 1px solid #f00; /* Red border for error/alert */
+            padding: 12px 20px;
+            border-radius: 5px;
+            display: none;
+            font-size: 1rem;
+            box-shadow: 0 2px 8px #0002;
+            z-index: 10000;
+        }
+
+        .left-scrollable-content {
+            overflow-y: auto;
+            overflow-x: hidden;
+            flex: 1;
+            padding: 0rem 1rem 5rem 1rem;
+        }
+
+        /* Menu content sections */
+        .menu-content-section {
+            width: 80%;
+            height: 90%;
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #CDB8A3; /* Mocha Cream */
+            color: #2E2E2E; /* Dark gray for readability */
+            padding: 30px;
+            max-width: 90vw;
+            max-height: 80vh;
+            border-radius: 16px; /* Curved edges */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15); /* Subtle shadow for depth */
+            z-index: 1001;
+            border: 1px solid #e0e0e0; /* Light border for definition */
+            overflow-y: auto; /* Allow scrolling if content is too tall */
+        }
+
+            .menu-content-section.active {
+                display: block;
+            }
+
+            .menu-content-section h2 {
+                color: #4B2E15;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+
+            .menu-content-section p {
+                color: #6B4E37;
+                font-size: 1.1rem;
+                text-align: center;
+                margin: 20px 0;
+            }
+
+        .back-button {
+            position: absolute; /* Changed from fixed to absolute for better positioning within the section */
+            top: 20px;
+            left: 20px;
+            z-index: 5001;
+            background: #3B2F2F;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+            .back-button:hover {
+                background: #2A1F1F;
+            }
+        /* Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Base styles for the showcase modal */
+        .showmodal-unique {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Fixed typo */
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        /* Modal content filling the entire screen */
+        .showmodal-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-radius: 0px;
+            box-shadow: none;
+        }
+
+        /* TOP PANEL - 5 items per row in grid */
+        .showcase-top {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* Exactly 5 columns */
+            gap: 15px;
+            padding: 20px;
+            background-color: #D7C6AD; /* Mocha Cream */
+            color: #333;
+            overflow-y: auto; /* Vertical scroll only */
+        }
+
+        .showcase-top-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-height: 220px;
+        }
+
+            .showcase-top-item img {
+                width: 140px;
+                height: 160px;
+                object-fit: cover;
+                border-radius: 8px;
+                background: #fff;
+                margin-bottom: 8px;
+            }
+
+            .showcase-top-item div {
+                font-size: 0.9rem;
+                font-weight: 500;
+                line-height: 1.2;
+                margin-top: 5px;
+            }
+
+        /* BOTTOM PANEL - Table with product details */
+        .showcase-bottom {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: #D7C6AD; /* Mocha Cream */
+        }
+
+        .showcase-grid {
+            width: 100%;
+            color: black;
+            border-collapse: collapse;
+            background-color: #B76E79;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+            .showcase-grid thead tr {
+                background-color: #8B0000;
+                color: white;
+            }
+
+            .showcase-grid tbody tr {
+                background-color: #FCECEC;
+            }
+
+                .showcase-grid tbody tr:nth-child(even) {
+                    background-color: #F5E6E6;
+                }
+
+            .showcase-grid th,
+            .showcase-grid td {
+                padding: 12px;
+                border-bottom: 1px solid #ddd;
+                text-align: center;
+                vertical-align: middle;
+            }
+
+            .showcase-grid th {
+                font-weight: bold;
+                font-size: 1rem;
+            }
+
+            .showcase-grid td {
+                font-size: 0.95rem;
+            }
+
+    </style>
+</head>
+<body>
+    <div id="sideMenu" style="position: fixed; top: 0; left: -250px; width: 250px; height: 100%; background-color: #222; color: white; overflow: hidden; transition: left 0.3s ease; z-index: 9999; padding-top: 60px;">
+        <a href="javascript:void(0)" onclick="toggleMenu()" style="display: block; padding: 15px 20px; color: white; text-decoration: none; border-bottom: 1px solid #444;">✖ Close</a>
+        <a href="javascript:void(0)" onclick="showContent('customerDetailsSection')" style="display: block; padding: 15px 20px; color: white; text-decoration: none;">👤 Customer Details</a>
+        <a href="javascript:void(0)" onclick="showContent('itemsSection')" style="display: block; padding: 15px 20px; color: white; text-decoration: none;">🛍️ Items</a>
+        <a href="javascript:void(0)" onclick="showContent('billsSection')" style="display: block; padding: 15px 20px; color: white; text-decoration: none;">📄 Bills</a>
+        <a href="javascript:void(0)" onclick="logout()" style="display: block; padding: 15px 20px; color: white; text-decoration: none;">🔐 Logout</a>
+    </div>
+
+    <div class="header">
+        <button class="menu-icon" onclick="toggleMenu()">☰</button>
+        <div class="header-center">
+            <h1>THE DAILY BAKEHOUSE</h1>
+        </div>
+        <div class="header-right">
+            <a href="/Login" class="login-link">Login</a>
+        </div>
+    </div>
+
+
+    <div id="CustomerDetails" class="
++-">
+        <button class="back-button" onclick="hideContent()">← Back</button>
+        <h2>Customer Details</h2>
+        <form id="customerForm" onsubmit="saveCustomerDetails(event)" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+            <label>
+                Name:
+                <input type="text" id="custName" required style="width: 100%; padding: 8px;" />
+            </label>
+            <label>
+                Address:
+                <input type="text" id="custAddress" required style="width: 100%; padding: 8px;" />
+            </label>
+            <label>
+                Phone Number:
+                <input type="tel" id="custPhone" required pattern="[0-9]{10}" style="width: 100%; padding: 8px;" />
+            </label>
+            <button type="submit" style="padding: 10px; background-color: #6C4F3D; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                Save Details
+            </button>
+            <div id="saveMessage" style="color: green; display: none;">Details saved!</div>
+        </form>
+    </div>
+    >
+
+    <div id="itemsSection" class="menu-content-section">
+        <button class="back-button" onclick="hideContent()">← Back</button>
+
+
+                
+
+                <!-- ✅ TOP HALF — 5 images per row -->
+                <div class="showcase-top" id="showcaseTop">
+                    <div class="showcase-top-item">
+                        <img src="~/images/banana cake.jpg" />
+                        <div>Banana Cake</div>
+                    </div>
+                    <div class="showcase-top-item">
+                        <img src="~/images/brownie.jpg" />
+                        <div>Brownie</div>
+                    </div>
+                    <div class="showcase-top-item">
+                        <img src="~/images/cake pop.jpg" />
+                        <div>Cake Pop</div>
+                    </div>
+                    <div class="showcase-top-item">
+                        <img src="~/images/cheesecake.jpg" />
+                        <div>Cheesecake</div>
+                    </div>
+                    <div class="showcase-top-item">
+                        <img src="~/images/chocolate strawberry.jpg" />
+                        <div>Chocolate Strawberry</div>
+                    </div>
+                    <div class="showcase-top-item">
+                        <img src="~/images/churros.jpg" />
+                        <div>Churros</div>
+                    </div>
+                    <div class="showcase-top-item">
+                        <img src="~/images/cookies.jpg" />
+                        <div>Cookies</div>
+                    </div>
+                    <div class="showcase-top-item">
+                        <img src="~/images/cupcake.jpg" />
+                        <div>Cupcake</div>
+                    </div>
+                    <div class="showcase-top-item">
+                        <img src="~/images/donuts.jpg" />
+                        <div>Donuts</div>
+                    </div>
+                    <div class="showcase-top-item">
+                        <img src="~/images/matilda cake.jpg" />
+                        <div>Matilda Cake</div>
+                    </div>
+                    <div class="showcase-top-item">
+                        <img src="~/images/matilda cake.jpg" />
+                        <div>Milk Cake</div>
+                    </div>
+                    <div class="showcase-top-item">
+                        <img src="~/images/tiramisu.jpg" />
+                        <div>Tiramisu</div>
+                    </div>
+                    <div class="showcase-top-item">
+                        <img src="~/images/pudding.jpg" />
+                        <div>Pudding</div>
+                    </div>
+                    <div class="showcase-top-item">
+                        <img src="~/images/sundae.jpg" />
+                        <div>Sundae</div>
+                    </div>
+                    <div class="showcase-top-item">
+                        <img src="~/images/waffle.jpg" />
+                        <div>Waffle</div>
+                    </div>
+                    
+                    
+                </div>
+    </div>
+
+    <div id="billsSection" class="menu-content-section">
+        <button class="back-button" onclick="hideContent()">← Back</button>
+        <h2>Bills & Invoices</h2>
+    </div>
+
+    <div class="container" id="mainContainer">
+        <div class="left-panel">
+            <div class="left-scrollable-content">
+                <div class="item-list">
+                    <div class="item" data-id="1" data-name="Banana Cake" data-price="145">
+                        <img src="/images/banana cake.jpg" alt="Banana Cake" />
+                        <div class="item-name">Banana Cake</div>
+                        <div class="item-id">ID: 1</div>
+                        <div class="item-price">₹145</div>
+                        <button class="add-cart-btn" onclick="addToCartFromPanel(this)">Add to Cart</button>
+                    </div>
+
+                    <div class="item" data-id="2" data-name="Brownie" data-price="95">
+                        <img src="/images/brownie.jpg" alt="Brownie" />
+                        <div class="item-name">Brownie</div>
+                        <div class="item-id">ID: 2</div>
+                        <div class="item-price">₹95</div>
+                        <button class="add-cart-btn" onclick="addToCartFromPanel(this)">Add to Cart</button>
+                    </div>
+
+                    <div class="item" data-id="3" data-name="Cake Pop" data-price="60">
+                        <img src="/images/cake pop.jpg" alt="Cake Pop" />
+                        <div class="item-name">Cake Pop</div>
+                        <div class="item-id">ID: 3</div>
+                        <div class="item-price">₹60</div>
+                        <button class="add-cart-btn" onclick="addToCartFromPanel(this)">Add to Cart</button>
+                    </div>
+
+                    <div class="item" data-id="4" data-name="Cheesecake" data-price="70">
+                        <img src="/images/cheesecake.jpg" alt="Cheesecake" />
+                        <div class="item-name">Cheesecake</div>
+                        <div class="item-id">ID: 4</div>
+                        <div class="item-price">₹70</div>
+                        <button class="add-cart-btn" onclick="addToCartFromPanel(this)">Add to Cart</button>
+                    </div>
+
+                    <div class="item" data-id="5" data-name="Chocolate Strawberry" data-price="100">
+                        <img src="/images/chocolate strawberry.jpg" alt="Chocolate Strawberry" />
+                        <div class="item-name">Chocolate Strawberry</div>
+                        <div class="item-id">ID: 5</div>
+                        <div class="item-price">₹100</div>
+                        <button class="add-cart-btn" onclick="addToCartFromPanel(this)">Add to Cart</button>
+                    </div>
+
+                    <div class="item" data-id="6" data-name="Churros" data-price="129">
+                        <img src="/images/churros.jpg" alt="Churros" />
+                        <div class="item-name">Churros</div>
+                        <div class="item-id">ID: 6</div>
+                        <div class="item-price">₹129</div>
+                        <button class="add-cart-btn" onclick="addToCartFromPanel(this)">Add to Cart</button>
+                    </div>
+
+                    <div class="item" data-id="7" data-name="Cookies" data-price="89">
+                        <img src="/images/cookies.jpg" alt="Cookies" />
+                        <div class="item-name">Cookies</div>
+                        <div class="item-id">ID: 7</div>
+                        <div class="item-price">₹89</div>
+                        <button class="add-cart-btn" onclick="addToCartFromPanel(this)">Add to Cart</button>
+                    </div>
+
+                    <div class="item" data-id="8" data-name="Cupcake" data-price="55">
+                        <img src="/images/cupcake.jpg" alt="Cupcake" />
+                        <div class="item-name">Cupcake</div>
+                        <div class="item-id">ID: 8</div>
+                        <div class="item-price">₹55</div>
+                        <button class="add-cart-btn" onclick="addToCartFromPanel(this)">Add to Cart</button>
+                    </div>
+
+                    <div class="item" data-id="9" data-name="Donuts" data-price="70">
+                        <img src="/images/donuts.jpg" alt="Donuts" />
+                        <div class="item-name">Donuts</div>
+                        <div class="item-id">ID: 9</div>
+                        <div class="item-price">₹70</div>
+                        <button class="add-cart-btn" onclick="addToCartFromPanel(this)">Add to Cart</button>
+                    </div>
+
+                    <div class="item" data-id="10" data-name="Matilda Cake" data-price="160">
+                        <img src="/images/matilda cake.jpg" alt="Matilda Cake" />
+                        <div class="item-name">Matilda Cake</div>
+                        <div class="item-id">ID: 10</div>
+                        <div class="item-price">₹160</div>
+                        <button class="add-cart-btn" onclick="addToCartFromPanel(this)">Add to Cart</button>
+                    </div>
+
+                    <div class="item" data-id="11" data-name="Milk Cake" data-price="150">
+                        <img src="/images/milk cake.jpg" alt="Milk Cake" />
+                        <div class="item-name">Milk Cake</div>
+                        <div class="item-id">ID: 11</div>
+                        <div class="item-price">₹150</div>
+                        <button class="add-cart-btn" onclick="addToCartFromPanel(this)">Add to Cart</button>
+                    </div>
+
+                    <div class="item" data-id="12" data-name="Tiramisu" data-price="190">
+                        <img src="/images/tiramisu.jpg" alt="Tiramisu" />
+                        <div class="item-name">Tiramisu</div>
+                        <div class="item-id">ID: 12</div>
+                        <div class="item-price">₹190</div>
+                        <button class="add-cart-btn" onclick="addToCartFromPanel(this)">Add to Cart</button>
+                    </div>
+
+                    <div class="item" data-id="13" data-name="Pudding" data-price="90">
+                        <img src="/images/pudding.jpg" alt="Pudding" />
+                        <div class="item-name">Pudding</div>
+                        <div class="item-id">ID: 13</div>
+                        <div class="item-price">₹90</div>
+                        <button class="add-cart-btn" onclick="addToCartFromPanel(this)">Add to Cart</button>
+                    </div>
+
+                    <div class="item" data-id="14" data-name="Sundae" data-price="145">
+                        <img src="/images/sundae.jpg" alt="Sundae" />
+                        <div class="item-name">Sundae</div>
+                        <div class="item-id">ID: 14</div>
+                        <div class="item-price">₹145</div>
+                        <button class="add-cart-btn" onclick="addToCartFromPanel(this)">Add to Cart</button>
+                    </div>
+
+                    <div class="item" data-id="15" data-name="Waffle" data-price="120">
+                        <img src="/images/waffle.jpg" alt="Waffle" />
+                        <div class="item-name">Waffle</div>
+                        <div class="item-id">ID: 15</div>
+                        <div class="item-price">₹120</div>
+                        <button class="add-cart-btn" onclick="addToCartFromPanel(this)">Add to Cart</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="right-panel">
+
+            <div style="width:100%">
+
+                <div class="scrollable-table-container">
+                    <table id="productTable" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Product Name</th>
+                                <th>Unit Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="cartBody">
+                        </tbody>
+
+
+                    </table>
+
+                </div>
+                <div id="totalsSection" style="width:100%; max-width:600px; margin: 0 auto 1rem auto; color: white;">
+                    <div style="display:flex; justify-content: flex-end; gap: 8px; padding: 4px 0;">
+                        <span><strong>Net Total :</strong></span>
+                        <span id="netTotalPage">0.00</span>
+                    </div>
+
+                    <div style="display:flex; justify-content: flex-end; gap: 8px; padding: 4px 0;">
+                        <span><strong>GST (2%):</strong></span>
+                        <span id="gst">0.00</span>
+                    </div>
+                    <div style="display:flex; justify-content: flex-end; gap: 8px; padding: 4px 0;">
+                        <span><strong>Delivery Charges:</strong></span>
+                        <span id="deliveryCharges">0.00</span>
+                    </div>
+                    <div style="display:flex; justify-content: flex-end; gap: 8px; padding: 4px 0;">
+                        <span><strong>Grand Total:</strong></span>
+                        <span id="grandTotal" style="font-weight:bold;">0.00</span>
+                    </div>
+                </div>
+                <div class="toast" id="toast"></div>
+                <button onclick="clearGrid()" style="margin-bottom: 20px;">Clear </button>
+                <button onclick="downloadTableAsPDF()">Generate PDF</button>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="footer"></div>
+
+    <div id="customAlert" class="modal">
+        <div class="alert-content">
+            <div id="customAlertHeader">
+                <span style="font-weight:bold;">Alert</span>
+            </div>
+            <div id="customAlertMsg"></div>
+            <div style="text-align:right; padding:8px; ">
+                <button id="customAlertOk">OK</button>
+            </div>
+        </div>
+    </div>
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <p>Are you sure you want to clear the cart? This action cannot be undone.</p>
+            <div class="modal-buttons">
+                <button id="modalCancelBtn">Cancel</button>
+                <button id="modalOkBtn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+
+    <script src="~/js/product-cart.js"></script>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('sideMenu');
+            const isOpen = menu.style.left === '0px';
+            menu.style.left = isOpen ? '-250px' : '0';
+        }
+
+        function showContent(sectionId) {
+            toggleMenu(); // Closes the menu
+            const sections = ['customerDetailsSection', 'itemsSection', 'billsSection']; // Updated IDs to match the HTML
+            sections.forEach(id => {
+                document.getElementById(id).style.display = 'none'; // Hide all sections first
+            });
+            document.getElementById(sectionId).style.display = 'flex'; // Show the selected section using flex for centering
+            // Hide the main container when a menu section is active
+            document.getElementById('mainContainer').style.display = 'none';
+        }
+
+        function hideContent() {
+            const sections = ['customerDetailsSection', 'itemsSection', 'billsSection'];
+            sections.forEach(id => {
+                document.getElementById(id).style.display = 'none'; // Hide all menu sections
+            });
+            // Show the main container again
+            document.getElementById('mainContainer').style.display = 'flex'; // Assuming main container is flex
+        }
+
+        function logout() {
+            toggleMenu();
+            // Using a more custom confirm message for better styling integration if needed,
+            // though the browser's confirm will still work.
+            // For a fully custom confirm, you'd use your custom modal.
+            if (confirm("Are you sure you want to logout?")) {
+                window.location.href = '/Login'; // This goes to your login.cshtml
+            }
+        }
+    </script>
+
+</body>
+</html>

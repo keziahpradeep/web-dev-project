@@ -1,0 +1,107 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> THE DAILY BAKEHOUSE - Login</title>
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body 
+
+        {
+            /* Full-screen background image */
+            background: url('/images/0e5e9640-010c-4027-9657-40644a038d79.jpeg') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+            body::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                /* Soft overlay for readability */
+                background: rgba(241, 230, 177, 0.6);
+                z-index: 1;
+            }
+
+        .login-box {
+            position: relative;
+            z-index: 2;
+            background: rgba(204, 183, 156, 0.9); /* pastel brown */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(131, 105, 83, 0.3);
+            width: 350px;
+            text-align: center;
+        }
+
+        .shop-name {
+            font-size: 28px;
+            font-weight: bold;
+            color: #836953;
+            margin-bottom: 20px;
+        }
+
+        input {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #CEBAA0;
+            border-radius: 5px;
+            font-size: 14px;
+            background: #fff;
+        }
+
+        button {
+            width: 70%;
+            padding: 7px;
+            background-color: #8369539c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+            button:hover {
+                background-color: #CEBAA0;
+            }
+
+        .error-message {
+            color: #C19A6B;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Centered Login Box -->
+    <div class="login-box">
+        <h1 class="shop-name"> THE DAILY BAKEHOUSE </h1>
+        <form method="post" asp-action="Login">
+            <input type="text" name="username" placeholder="Enter Username" required>
+            <input type="password" name="password" placeholder="Enter Password" required>
+            <button type="submit">Login</button>
+            <p class="error-message">@ViewBag.ErrorMessage</p>
+        </form>
+    </div>
+
+</body>
+</html>
